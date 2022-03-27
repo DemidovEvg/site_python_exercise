@@ -1,4 +1,10 @@
-[![Website jureti1.ru](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](http://jureti1.ru/)
+![Website](https://img.shields.io/website?url=http%3A%2F%2Fjureti.ru%2F)
+![GitHub last commit](https://img.shields.io/github/last-commit/demidovevg/site_python_exercise)
+[![made-with-django](https://img.shields.io/badge/Made%20with-Django-1f425f.svg)](https://docs.djangoproject.com/)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![made-with-javascript](https://img.shields.io/badge/Made%20with-JavaScript-1f425f.svg)](https://www.javascript.com)
+
+
 # Учебный сайт с задачами по Python
 
 Данный проект - сайт создан прежде всего в учебных целях. Данный сайт содержит задачи для языка программирования python.
