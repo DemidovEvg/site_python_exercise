@@ -54,9 +54,9 @@ ul {
     display: none;
 }
 
-#id_tag {
+/* #id_tag {
     display: none;
-}
+} */
 
 .test-color {
     --bs-blue: #0d6efd;
