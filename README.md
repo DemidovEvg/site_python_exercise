@@ -6,7 +6,7 @@ Frontend выполен с использованием framework bootstrap 5.
 Backend выполнен на framework Django.
 
 Сайт представлен по [ссылке](http://jureti.ru/).
-Если ссылка не доступна, то полноразмерные скриншоты: [1](/screenshots/1.png), [2](/screenshots/2.png), [3](/screenshots/1.png), [4](/screenshots/1.png)
+Если ссылка не доступна, то полноразмерные скриншот [списка заданий](/screenshots/1.png), [редактирование задачи](/screenshots/2.png), [вход на сайт](/screenshots/1.png), [карточка задачи с комментариями](/screenshots/1.png)
 
 Что проект делает?
 Как им пользоваться?
