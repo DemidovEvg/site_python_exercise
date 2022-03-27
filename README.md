@@ -1,3 +1,4 @@
+[![Website jureti1.ru](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](http://jureti1.ru/)
 # Учебный сайт с задачами по Python
 
 Данный проект - сайт создан прежде всего в учебных целях. Данный сайт содержит задачи для языка программирования python.
