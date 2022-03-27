@@ -3,7 +3,7 @@ from django import template
 register = template.Library()
 
 
-@register.inclusion_tag('pagination.html', takes_context=True)
+@register.inclusion_tag('pagination_tag.html', takes_context=True)
 def pagination_tag(context):
     paginator = context['paginator']
     cur_page_num = context['page_obj'].number

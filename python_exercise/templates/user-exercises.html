@@ -84,80 +84,8 @@
                         <hr>
 
                         <div class="col-12">
-
                             {% for exercise in exercises %}
-                            <div class="row">
-                                <div class="col mx-2">
-                                    {{ exercise.title }}
-                                    {{ exercise.task_text | safe}}
-                                </div>
-                                <div class="col-auto ps-0">
-                                    <a title="Редактировать" href="{{ exercise.get_absolute_url_update }}">
-                                        <img src="{% static 'python_exercise/img/edit.svg' %}"
-                                            style="height: 24px; filter: invert(13%) sepia(20%) saturate(1129%) hue-rotate(204deg) brightness(91%) contrast(88%);"
-                                            alt="">
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 d-flex justify-content-end">
-                                    <span
-                                        class="d-inline-block px-2 mb-2 rounded complexity_{{ exercise.category.complexity }}">
-                                        {{ exercise.category.name }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <ul class="text-muted text-end" style="list-style-type: none;">
-                                        <li>
-                                            Создание: {{ exercise.author_create }}
-                                            <img src="{% static 'python_exercise/img/exclamation-mark.svg' %}" alt="!"
-                                                height="20px" class="mb-1" title="
-                                            {% if  exercise.author_create.first_name %}
-                                            {{ exercise.author_create.first_name }} {{ exercise.author_create.last_name }}                                          
-                                            {% else %}
-                                            нет дополнительный данных
-                                            {% endif %}">
-                                            ({{ exercise.time_create|timesince }} ago)
-                                        </li>
-                                        {% if exercise.time_create != exercise.time_update %}
-                                        <li>
-                                            Изменение: {{ exercise.author_update }}
-                                            <img src="{% static 'python_exercise/img/exclamation-mark.svg' %}" alt="!"
-                                                height="20px" class="mb-1" title="
-                                            {% if  exercise.author_update.first_name %}
-                                            {{ exercise.author_update.first_name }} {{ exercise.author_update.last_name }}                                          
-                                            {% else %}
-                                            нет дополнительный данных
-                                            {% endif %}">
-                                            ({{ exercise.time_update|timesince }} ago)
-                                        </li>
-                                        {% endif %}
-
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="row justify-content-between">
-                                <div class="col-12 col-md-6">
-                                    Теги:
-                                    {% for tag in exercise.tag.all %}
-                                    #<a href="
-                                    {% if current_category %}
-                                    {% url 'python_exercise:category_and_tag' category_slug=current_category.slug tag_slug=tag.slug %}
-                                    {% else %}
-                                    {% url 'python_exercise:tag' tag_slug=tag.slug %}
-                                    {% endif %}" class="text-muted">
-                                        {{ tag.name }}
-                                    </a>
-                                    {% endfor %}
-                                </div>
-                                <div class="col-12 col-md-6 text-end">
-                                    <a href='{{ exercise.get_absolute_url }}' class="text-muted">
-                                        Комментарии
-                                    </a>
-                                </div>
-                            </div>
+                            {% include 'exercise.html' %}
                             <hr>
                             {% endfor %}
                         </div>
