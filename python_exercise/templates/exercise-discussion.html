@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load pagination_tag %}
+
+
+{% block title %}
+{{ block.super }}
+{% endblock title %}
+
+{% block head %}
+<!-- Для комментариев через vk -->
+<script src="https://vk.com/js/api/openapi.js?169" type="text/javascript"></script>
+{% endblock head %}
+
+{% block content %}
+{% load static %}
+
+<div class="container-fluid h-100">
+    <div class="row flex-nowrap h-100">
+        <!-- Боковая панель -->
+        {% load sidebar_categories_tag %}
+        {% sidebar_categories_tag %}
+        <!-- Основное содержание -->
+        <main class="col ps-md-2 pt-2 h-100 max-width-1000px bg-body mx-auto">
+
+            <div class="content" id="content">
+                <div class="row  ">
+                    <div class="container-fluid text-left relative">
+                        <div class="page-header">
+                            <h2 class="text-center" style="z-index:-10">{{ title }}</h2>
+                        </div>
+                        <hr>
+                        <div class="col-12">
+                            <div class="row d-flex flex-nowrap">
+                                <div class="col mx-2" style="word-wrap: break-word; width: 100px">
+                                    <h3>{{ exercise.title }}</h3>
+                                    {{ exercise.task_text | safe}}
+                                </div>
+                                <div class="col-auto ps-0">
+                                    <a title="Редактировать" href="{{ exercise.get_absolute_url_update }}">
+                                        <img src="{% static 'python_exercise/img/edit.svg' %}"
+                                            style="height: 24px; filter: invert(13%) sepia(20%) saturate(1129%) hue-rotate(204deg) brightness(91%) contrast(88%);"
+                                            alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row mt-3 justify-content-between">
+                                <div class="col-12 col-md-6 d-flex flex-wrap align-items-end">
+                                    Теги:
+                                    {% for tag in exercise.tag.all %}
+                                    <a href="
+                                    {% if current_category %}
+                                    {% url 'python_exercise:category_and_tag' category_slug=current_category.slug tag_slug=tag.slug %}
+                                    {% else %}
+                                    {% url 'python_exercise:tag' tag_slug=tag.slug %}
+                                    {% endif %}" class="text-muted mx-1">
+                                        #{{ tag.name }}
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <ul class="text-muted text-end" style="list-style-type: none;">
+                                        <li>
+                                            <span
+                                                class="d-inline-block px-2 mb-2 rounded complexity_{{ exercise.category.complexity }}">
+                                                {{ exercise.category.name }}
+                                            </span>
+                                        </li>
+                                        <li>
+                                            Создание: {{ exercise.author_create }}
+                                            <img src="{% static 'python_exercise/img/exclamation-mark.svg' %}" alt="!"
+                                                height="20px" class="mb-1" title="
+                                                {% if  exercise.author_create.first_name %}
+                                                {{ exercise.author_create.first_name }} {{ exercise.author_create.last_name }}                                          
+                                                {% else %}
+                                                нет дополнительный данных
+                                                {% endif %}">
+                                            ({{ exercise.time_create|timesince }} ago)
+                                        </li>
+                                        {% if exercise.time_create != exercise.time_update %}
+                                        <li>
+                                            Изменение: {{ exercise.author_update }}
+                                            <img src="{% static 'python_exercise/img/exclamation-mark.svg' %}" alt="!"
+                                                height="20px" class="mb-1" title="
+                                                {% if  exercise.author_update.first_name %}
+                                                {{ exercise.author_update.first_name }} {{ exercise.author_update.last_name }}                                          
+                                                {% else %}
+                                                нет дополнительный данных
+                                                {% endif %}">
+                                            ({{ exercise.time_update|timesince }} ago)
+                                        </li>
+                                        {% endif %}
+
+                                    </ul>
+                                </div>
+                            </div>
+                            <hr>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div id="vk_comments" style="width: 100%; height: 500px"></div>
+                <script type="text/javascript">
+                    VK.init({
+                        apiId: 8113311
+                    });
+                    VK.Widgets.Comments('vk_comments', {
+                        limit: 10,
+                        attach: "*",
+                        pageURL: window.location.pathname
+                    });
+                </script>
+        </main>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+{{ block.super }}
+{% endblock title %}
+
+{% block content %}
+
+<div class="container-fluid bg-light min-vh-100">
+    <div class="container-fluid pt-2 bg-body max-width-1000px min-vh-100">
+        <div class="row">
+            <div class="col">
+                <h6 class="text-center ">
+                    <span class="fs-2">
+                        Регистрация
+                    </span>
+                    /
+                    <a href="{% url 'custom_auth:login' %}" class="link-primary" style="text-decoration: none;">
+                        Вход
+                    </a>
+                </h6>
+                <!-- Форма -->
+                <form method="post" class="max-width-300px my-0 mx-auto">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger mt-3" role="alert">{{ form.non_field_errors }}</div>
+                    {% endif %}
+
+
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">
+                            {{ form.username.label }}
+                        </label>
+                        {{ form.username }}
+
+                        {% if form.username.errors %}
+                        <div class="alert alert-danger mt-3" role="alert">{{ form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label">
+                            {{ form.password1.label }}
+                        </label>
+                        {{ form.password1 }}
+
+                        {% if form.password1.errors %}
+                        <div class="alert alert-danger mt-3" role="alert">{{ form.password1.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label">
+                            {{ form.password2.label }}
+                        </label>
+                        {{ form.password2 }}
+
+                        {% if form.password2.errors %}
+                        <div class="alert alert-danger mt-3" role="alert">{{ form.password2.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                            {{ form.first_name.label }}
+                        </label>
+                        {{ form.first_name }}
+
+                        {% if form.first_name.errors %}
+                        <div class="alert alert-danger mt-3" role="alert">{{ form.first_name.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                            {{ form.last_name.label }}
+                        </label>
+                        {{ form.last_name }}
+
+                        {% if form.last_name.errors %}
+                        <div class="alert alert-danger mt-3" role="alert">{{ form.last_name.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">
+                            {{ form.email.label }}
+                        </label>
+                        {{ form.email }}
+                        <div class="">* - обязательные поля </div>
+
+                        {% if form.email.errors %}
+                        <div class="alert alert-danger mt-3" role="alert">{{ form.email.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <input type="hidden" name="next" value="{{ next }}">
+                    <div class="wrapper-submit">
+                        <button id='submit' type="submit" class="btn btn-primary my-1 px-4">
+                            Создать
+                        </button>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

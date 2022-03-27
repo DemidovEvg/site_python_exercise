@@ -1,0 +1,65 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Иконка с переходом на главную -->
+        <a class="navbar-brand fs-2 lh-1 px-2 m-auto" href="{% url 'python_exercise:home' %}">
+            {% load static %}
+            <img src="{% static 'python_exercise/img/favicon.svg' %}" height='48px' alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link 
+                    {% if cur_url_name == 'create-exercise' %}                   
+                    active
+                    {% endif %}" href="{% url 'python_exercise:create-exercise' %}">
+                        {{ menu.create_exercise.title }}
+                    </a>
+                </li>
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link 
+                    {% if cur_url_name == 'user_exercises' %}                   
+                    active
+                    {% endif %}" href="{% url 'python_exercise:user_exercises' user_slug=user.username %}">
+                        {{ menu.user_exercises.title }}
+                    </a>
+                </li>
+
+                {% endif %}
+
+            </ul>
+            <!-- Кнопки справа -->
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                {% if user.is_authenticated %}
+
+                <li class="nav-item">
+                    <span class="nav-link me-2 my-1">
+                        {{ user.first_name }} {{ user.last_name }} ({{ user.username }})
+                        {% if user.userdata %}
+                        <img class="rounded-circle ms-2" src="{{ user.userdata.photo_url }}" alt="фото_нет"
+                            style="height: 30px">
+                        {% endif %}
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-outline-success my-1" href="{% url 'custom_auth:logout' %}">
+                        {{ menu.logout.title }}
+                    </a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="btn btn-outline-success my-1" href="{% url 'custom_auth:login' %}">
+                        {{ menu.login.title }}
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+
+        </div>
+
+    </div>
+</nav>

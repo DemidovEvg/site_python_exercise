@@ -1,0 +1,43 @@
+<div class="col-auto px-0 position-absolute bg-body h-100 shadow" style="z-index: 10">
+    <div id="sidebar" class="collapse collapse-horizontal border-end show">
+        <div id="sidebar-nav" class="list-group border-0 rounded-0 text-sm-start" style="width: max-content">
+            <a href="{% url 'python_exercise:home' %}" class="list-group-item border-end-0 d-inline-block text-truncate w-100 h-100 
+            {% if current_category is defined %}
+            active" {% else %} " {% endif %} data-bs-parent=" #sidebar">
+                Все категории
+            </a>
+
+            {% for category in categories %}
+            <a href="{{ category.get_absolute_url }}" class="list-group-item border-end-0 d-inline-block text-truncate 
+                {% if current_category.name == category.name %}
+                active" {% else %} " {% endif %} data-bs-parent=" #sidebar">
+                {{ category.name }}
+            </a>
+            {% endfor %}
+
+        </div>
+
+    </div>
+    <a href="#" data-bs-target="#sidebar" data-bs-toggle="collapse" class="text-decoration-none text-dark"
+        id="btn-collapse">
+        <div class="position-absolute border border-start-0 rounded-end p-2 top-0 end-0 bg-body"
+            style="z-index: 10; transform: translate(97%, 0%);">
+            >
+        </div>
+    </a>
+    <script>
+        // Скрываем боковую панель когда окно меньше определенного значения
+        window.addEventListener("resize", checkSizeWindow);
+
+        checkSizeWindow();
+
+        function checkSizeWindow() {
+            if (window.matchMedia("(min-width: 1440px)").matches) {
+                sidebar.classList.add('show');
+            } else {
+                sidebar.classList.remove('show');
+            }
+        }
+    </script>
+
+</div>

@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load pagination_tag %}
+
+
+{% block title %}
+{{ block.super }}
+{% endblock title %}
+
+{% block content %}
+{% load static %}
+
+<div class="container-fluid h-100">
+    <div class="row flex-nowrap h-100">
+        <!-- Боковая панель -->
+        {% load sidebar_categories_tag %}
+        {% sidebar_categories_tag %}
+        <!-- Основное содержание -->
+        <main class="col ps-md-2 pt-2 h-100 max-width-1000px bg-body mx-auto">
+
+            <div class="content" id="content">
+                <div class="row  ">
+                    <div class="container-fluid text-left relative">
+                        <a class="btn btn-body text-dark d-flex align-items-center" data-bs-toggle="collapse"
+                            href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"
+                            style="box-shadow: none; width: min-content">
+                            <span class="d-inline-block me-2 ">
+                                Теги
+                            </span>
+                            <img src="{% static 'python_exercise/img/arrow_down.svg' %}" style="height: 18px" alt="">
+                        </a>
+                        <div class="collapse" id="collapseExample">
+                            <ul class="list-group">
+                                {% for tag in tags %}
+                                <li class="list-group-item border-0">
+                                    <a class="text-dark" href="
+                                        {% if current_category %}
+                                        {% url 'python_exercise:category_and_tag' category_slug=current_category.slug tag_slug=tag.slug %}
+                                        {% else %}
+                                        {% url 'python_exercise:tag' tag_slug=tag.slug %}
+                                        {% endif %}">
+                                        #{{ tag.name }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+
+                        <div class="page-header">
+                            <h2 class="text-center" style="z-index:-10">{{ title }}</h2>
+
+                            <h6 class="text-center ">
+
+                                {% if cur_url_name == 'user_exercises' %}
+                                <span>Все</span>
+                                {% else %}
+                                <a href="{% url 'python_exercise:user_exercises' user_slug=user.username %}"
+                                    class="link-primary" style="text-decoration: none;">
+                                    Все
+                                </a>
+                                {% endif %}
+                                /
+                                {% if cur_url_name == 'user_exercises_create' %}
+                                <span>Я автор</span>
+                                {% else %}
+                                <a href="{% url 'python_exercise:user_exercises_create' user_slug=user.username %}"
+                                    class="link-primary" style="text-decoration: none;">
+                                    Я автор
+                                </a>
+                                {% endif %}
+                                /
+                                {% if cur_url_name == 'user_exercises_update' %}
+                                <span>Я последний редактор</span>
+                                {% else %}
+                                <a href="{% url 'python_exercise:user_exercises_update' user_slug=user.username %}"
+                                    class="link-primary" style="text-decoration: none;">
+                                    Я последний редактор
+                                </a>
+                                {% endif %}
+
+                            </h6>
+                        </div>
+
+                        <hr>
+
+                        <div class="col-12">
+
+                            {% for exercise in exercises %}
+                            <div class="row">
+                                <div class="col mx-2">
+                                    {{ exercise.title }}
+                                    {{ exercise.task_text | safe}}
+                                </div>
+                                <div class="col-auto ps-0">
+                                    <a title="Редактировать" href="{{ exercise.get_absolute_url_update }}">
+                                        <img src="{% static 'python_exercise/img/edit.svg' %}"
+                                            style="height: 24px; filter: invert(13%) sepia(20%) saturate(1129%) hue-rotate(204deg) brightness(91%) contrast(88%);"
+                                            alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 d-flex justify-content-end">
+                                    <span
+                                        class="d-inline-block px-2 mb-2 rounded complexity_{{ exercise.category.complexity }}">
+                                        {{ exercise.category.name }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <ul class="text-muted text-end" style="list-style-type: none;">
+                                        <li>
+                                            Создание: {{ exercise.author_create }}
+                                            <img src="{% static 'python_exercise/img/exclamation-mark.svg' %}" alt="!"
+                                                height="20px" class="mb-1" title="
+                                            {% if  exercise.author_create.first_name %}
+                                            {{ exercise.author_create.first_name }} {{ exercise.author_create.last_name }}                                          
+                                            {% else %}
+                                            нет дополнительный данных
+                                            {% endif %}">
+                                            ({{ exercise.time_create|timesince }} ago)
+                                        </li>
+                                        {% if exercise.time_create != exercise.time_update %}
+                                        <li>
+                                            Изменение: {{ exercise.author_update }}
+                                            <img src="{% static 'python_exercise/img/exclamation-mark.svg' %}" alt="!"
+                                                height="20px" class="mb-1" title="
+                                            {% if  exercise.author_update.first_name %}
+                                            {{ exercise.author_update.first_name }} {{ exercise.author_update.last_name }}                                          
+                                            {% else %}
+                                            нет дополнительный данных
+                                            {% endif %}">
+                                            ({{ exercise.time_update|timesince }} ago)
+                                        </li>
+                                        {% endif %}
+
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row justify-content-between">
+                                <div class="col-12 col-md-6">
+                                    Теги:
+                                    {% for tag in exercise.tag.all %}
+                                    #<a href="
+                                    {% if current_category %}
+                                    {% url 'python_exercise:category_and_tag' category_slug=current_category.slug tag_slug=tag.slug %}
+                                    {% else %}
+                                    {% url 'python_exercise:tag' tag_slug=tag.slug %}
+                                    {% endif %}" class="text-muted">
+                                        {{ tag.name }}
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-12 col-md-6 text-end">
+                                    <a href='{{ exercise.get_absolute_url }}' class="text-muted">
+                                        Комментарии
+                                    </a>
+                                </div>
+                            </div>
+                            <hr>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row max-width-1000px mx-auto mb-2">
+                        <div class="col-12">
+                            {% pagination_tag %}
+                        </div>
+                    </div>
+                </div>
+        </main>
+    </div>
+</div>
+{% endblock content %}

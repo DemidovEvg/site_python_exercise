@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+{{ block.super }}
+{% endblock title %}
+
+{% block head %}
+<!-- Для авторизации через VK -->
+<script src="https://vk.com/js/api/openapi.js?169" type="text/javascript"></script>
+{% endblock head %}
+
+{% block content %}
+<!-- Для авторизации через VK -->
+<script type="text/javascript">
+    VK.init({ apiId: 8113311 });
+</script>
+
+<div class="container-fluid bg-light d-flex flex-grow-1">
+    <div class="container-fluid pt-2 bg-body max-width-1000px flex-grow-1">
+        <div class="row">
+            <div class="col">
+                <h6 class="text-center ">
+                    <span class="fs-2">
+                        Вход
+                    </span>
+                    /
+                    <a href="{% url 'custom_auth:registration' %}" class="link-primary" style="text-decoration: none;">
+                        Регистрация
+                    </a>
+                </h6>
+                <!-- Форма -->
+                <form method="post" class="max-width-300px my-0 mx-auto">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger mt-3" role="alert">{{ form.non_field_errors }}</div>
+                    {% endif %}
+
+
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">
+                            {{ form.username.label }}
+                        </label>
+                        {{ form.username }}
+
+                        {% if form.username.errors %}
+                        <div class="alert alert-danger mt-3" role="alert">{{ form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.password.id_for_label }}" class="form-label">
+                            {{ form.password.label }}
+                        </label>
+                        {{ form.password }}
+
+                        {% if form.password.errors %}
+                        <div class="alert alert-danger mt-3" role="alert">{{ form.password.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <!-- <a href="{{ next }}">Редирект обратно</a> -->
+                    <input type="hidden" name="next" value="{{ request.GET.next }}">
+
+                    <button id='submit' type="submit" class="btn btn-primary my-1 px-4" style="width: max-content">
+                        Вход
+                    </button>
+                    <div class="text-center my-2">
+                        <a href="{% url 'custom_auth:password_reset' %}" class="link-secondary">Сбросить пароль?</a>
+                    </div>
+                </form>
+                {% if login_vk_status %}
+                <div class="alert alert-warning mx-auto" style="width: max-content">
+                    Ошибка авторизации через VK
+                </div>
+                {% endif %}
+                <div id="vk_auth" class="mx-auto mb-2"></div>
+                <script id="vk_auth_script" type="text/javascript">
+                    VK.Widgets.Auth('vk_auth', { authUrl: "{% url 'custom_auth:login_vk' %}" });
+                </script>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

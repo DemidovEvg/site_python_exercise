@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+{{ block.super }}
+{% endblock title %}
+
+{% block content %}
+
+<div class="container-fluid bg-light min-vh-100">
+    <div class="container-fluid pt-2 bg-body max-width-1000px min-vh-100">
+        <div class="page-header">
+            <h4 class="text-center" style="z-index:-10">{{ title }}</h4>
+        </div>
+        <div class="row">
+            <div class="col">
+                <!-- Форма -->
+                <form id="create-exercise" method="post" class="max-width-900px mx-auto">
+                    {% csrf_token %}
+                    {% if new_exercise %}
+                    <div class="alert alert-success mt-2 mb-1" role="alert">
+                        Задача добавлена!
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3 max-width-300px">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">
+                            {{ form.title.label }}
+                        </label>
+                        {{ form.title }}
+
+                        {% if form.title.errors %}
+                        <div class="alert alert-danger mt-3" role="alert">{{ form.title.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3 max-width-900px">
+                        <label for="{{ form.task_text.id_for_label }}" class="form-label">
+                            {{ form.task_text.label }}
+                        </label>
+                        {{ form.task_text }}
+
+                        {% if form.task_text.errors %}
+                        <div class="alert alert-danger mt-3" role="alert">{{ form.task_text.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3 max-width-300px mt-2">
+                        <label for="{{ form.is_published.id_for_label }}" class="form-label me-1">
+                            {{ form.is_published.label }}
+                        </label>
+                        {{ form.is_published }}
+                    </div>
+
+                    <div class="mb-3 max-width-300px mt-2">
+                        <label for="{{ form.category.id_for_label }}" class="form-label me-1">
+                            {{ form.category.label }}
+                        </label>
+                        {{ form.category }}
+                    </div>
+
+                    <label id="labelTags" for="{{ form.tag.id_for_label }}" class="form-label"
+                        data-create-tag-url="{% url 'python_exercise:create-tag' %}">{{ form.tag.label }}</label>
+                    <div class="tag-wrapper d-flex align-items-center mt-2">
+                        <input class="form-control max-width-300px input_tag_real me-2" list="datalistOptions"
+                            placeholder="Выберите тег">
+                        <datalist id="datalistOptions">
+                            {% for tag in tags %}
+                            <option class="option_tag_real" value="{{ tag.name }}">
+                                {% endfor %}
+                        </datalist>
+
+                        <img role="button" src="{% static 'python_exercise/img/plus.svg' %}" height="24px" alt="">
+                    </div>
+                    {{ form.tag }}
+                    <div class="alert alert-danger mt-3" role="alert" id="tag-error" hidden>{{ form.tag.errors }}</div>
+
+                    <button id='submit' type="submit" class="btn btn-primary my-3">
+                        {{ submit_name }}
+                    </button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.tiny.cloud/1/rscqscrtyr7mlho06zt9i0k4ugf0bwhhcey86hqx5i9wir99/tinymce/5/tinymce.min.js"
+    referrerpolicy="origin"></script>
+<script defer src="{% static 'python_exercise/js/create-update-exercise.js' %}"></script>
+
+{% endblock content %}
