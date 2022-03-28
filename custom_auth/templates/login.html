@@ -55,22 +55,26 @@
                             {{ form.password.label }}
                         </label>
                         {{ form.password }}
-
                         {% if form.password.errors %}
                         <div class="alert alert-danger mt-3" role="alert">{{ form.password.errors }}</div>
                         {% endif %}
                     </div>
-                    <!-- <a href="{{ next }}">Редирект обратно</a> -->
-                    <input type="hidden" name="next" value="{{ request.GET.next }}">
+                    <input class="form-check-input" type="checkbox" value="" id="show-password">
+                    <label class="form-check-label" for="show-password">
+                        Показать пароль
+                    </label>
 
-                    <button id='submit' type="submit" class="btn btn-primary my-1 px-4" style="width: max-content">
-                        Вход
-                    </button>
+                    <input type="hidden" name="next" value="{{ request.GET.next }}">
+                    <div>
+                        <button id='submit' type="submit" class="btn btn-primary my-1 px-4" style="width: max-content">
+                            Вход
+                        </button>
+                    </div>
                     <div class="text-center my-2">
                         <a href="{% url 'custom_auth:password_reset' %}" class="link-secondary">Сбросить пароль?</a>
                     </div>
                 </form>
-                {% if login_vk_status %}
+                {% if login_vk_error %}
                 <div class="alert alert-warning mx-auto" style="width: max-content">
                     Ошибка авторизации через VK
                 </div>
@@ -84,5 +88,24 @@
         </div>
     </div>
 </div>
+<script>
+    var input = document.getElementById("password");
+    var button = document.getElementById("show-password");
+    button.onclick = show;
+
+    function show() {
+        if (input.getAttribute('type') == 'password') {
+            input.removeAttribute('type');
+            input.setAttribute('type', 'text');
+            // button.innerHTML = 'Hide password';
+
+        } else {
+            input.removeAttribute('type');
+            input.setAttribute('type', 'password');
+            // button.innerHTML = 'Show password';
+
+        }
+    }
+</script>
 
 {% endblock content %}

@@ -150,10 +150,6 @@ STATICFILES_DIRS = []
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
-# Для отладки сброса пароля пользователя
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-
 # Для работы django-debug-toolbar. Позволяет включать/отключать
 DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': lambda r: False  # disables it
@@ -190,7 +186,7 @@ if DEBUG:
             'file': {
                 'level': 'INFO',
                 'class': 'logging.FileHandler',
-                'filename': BASE_DIR / 'logs/debug.log',
+                'filename': BASE_DIR/'logs/debug.log',
                 'formatter': 'simple'
             },
         },
@@ -202,10 +198,27 @@ if DEBUG:
                 'level': 'INFO',
                 'filters': []
             },
-            # 'demidovsite': {
-            #     'handlers': ['file'],
-            #     'level': 'INFO',
-            #     'filters': [],
-            # 'propagate': False,
+            'demidovsite': {
+                'handlers': ['file'],
+                'level': 'INFO',
+                'filters': [],
+                'propagate': False,
+            }
         }
     }
+
+# Почта
+# Для отладки сброса пароля пользователя
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = "smtp.timeweb.ru"
+
+EMAIL_PORT = 2525
+
+EMAIL_HOST_USER = "service@jureti.ru"
+
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+SERVER_EMAIL = "service@jureti.ru"
+DEFAULT_FROM_EMAIL = "service@jureti.ru"

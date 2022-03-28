@@ -224,7 +224,7 @@ class Tags {
                     let arr = DuplicationSlugError('Повтор тега', nameTag, data.error);
                     throw arr;
                 }
-            });
+            }).catch(error => alert(error));
         return promis;
     }
 

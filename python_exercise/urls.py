@@ -38,15 +38,15 @@ urlpatterns = [
          ShowComments.as_view(),
          name='exercise'),
 
-    path('user/exercises/<slug:user_slug>/',
+    path('user/exercises/<slug:username>/',
          ShowUserExercises.as_view(),
          name='user_exercises'),
 
-    path('user/exercises/create/<slug:user_slug>/',
+    path('user/exercises/create/<slug:username>/',
          ShowUserExercisesCreate.as_view(),
          name='user_exercises_create'),
 
-    path('user/exercises/update/<slug:user_slug>/',
+    path('user/exercises/update/<slug:username>/',
          ShowUserExercisesUpdate.as_view(),
          name='user_exercises_update'),
 

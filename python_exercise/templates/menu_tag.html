@@ -24,7 +24,7 @@
                     <a class="nav-link 
                     {% if cur_url_name == 'user_exercises' %}                   
                     active
-                    {% endif %}" href="{% url 'python_exercise:user_exercises' user_slug=user.username %}">
+                    {% endif %}" href="{% url 'python_exercise:user_exercises' username=user.username %}">
                         {{ menu.user_exercises.title }}
                     </a>
                 </li>

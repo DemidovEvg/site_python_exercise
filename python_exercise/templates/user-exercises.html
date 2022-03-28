@@ -54,7 +54,7 @@
                                 {% if cur_url_name == 'user_exercises' %}
                                 <span>Все</span>
                                 {% else %}
-                                <a href="{% url 'python_exercise:user_exercises' user_slug=user.username %}"
+                                <a href="{% url 'python_exercise:user_exercises' username=user.username %}"
                                     class="link-primary" style="text-decoration: none;">
                                     Все
                                 </a>
@@ -63,7 +63,7 @@
                                 {% if cur_url_name == 'user_exercises_create' %}
                                 <span>Я автор</span>
                                 {% else %}
-                                <a href="{% url 'python_exercise:user_exercises_create' user_slug=user.username %}"
+                                <a href="{% url 'python_exercise:user_exercises_create' username=user.username %}"
                                     class="link-primary" style="text-decoration: none;">
                                     Я автор
                                 </a>
@@ -72,7 +72,7 @@
                                 {% if cur_url_name == 'user_exercises_update' %}
                                 <span>Я последний редактор</span>
                                 {% else %}
-                                <a href="{% url 'python_exercise:user_exercises_update' user_slug=user.username %}"
+                                <a href="{% url 'python_exercise:user_exercises_update' username=user.username %}"
                                     class="link-primary" style="text-decoration: none;">
                                     Я последний редактор
                                 </a>

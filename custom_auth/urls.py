@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import *
-from django.contrib.auth.views import PasswordResetCompleteView
+
 
 app_name = 'custom_auth'
 
@@ -13,9 +13,9 @@ urlpatterns = [
          login_vk,
          name='login_vk'),
 
-    path('login/<str:status>',
+    path('login/<str:error>',
          CustomLoginView.as_view(),
-         name='login'),
+         name='login_error'),
 
     path('login/',
          CustomLoginView.as_view(),
@@ -38,7 +38,7 @@ urlpatterns = [
          name='password_reset_done'),
 
     path('reset/complete/',
-         PasswordResetCompleteView.as_view(),
+         CustomPasswordResetCompleteView.as_view(),
          name='password_reset_complete'),
 
 ]

@@ -2,15 +2,17 @@ import json
 from django.http import HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
-from .forms import ExerciseForm, CreateTagForm
-from .models import *
-from .utils import *
-from .forms import *
 from pprint import pprint
 from django.template.defaultfilters import slugify
 from django.core.serializers import serialize
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.shortcuts import redirect
+from .forms import ExerciseForm, CreateTagForm
+from .models import *
+from .utils import *
+from .forms import *
 
 
 alphabet = {'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
@@ -83,8 +85,8 @@ class ShowExercises(DataMixin, ListView):
         return exercises
 
 
-class ShowUserExercises(ShowExercises):
-    slug_url_kwarg = 'user_slug'
+class ShowUserExercises(LoginRequiredMixin, ShowExercises):
+    slug_url_kwarg = 'username'
     template_name = 'user-exercises.html'
 
     def get_context_data(self, **kwargs):
@@ -168,36 +170,41 @@ class CreateExercise(LoginRequiredMixin, DataMixin, CreateView):
 
 
 def create_tag(request):
+    if request.method != 'POST':
+        return redirect('python_exercise:home', permanent=True)
+
+    if not request.user.is_authenticated:
+        return redirect('custom_auth:login', permanent=True)
+
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
 
-    if request.method == 'POST':
-        data = body
-        data['slug'] = slugify_rus(data['name'])
-        form = CreateTagForm(data)
-        if form.is_valid():
-            try:
-                Tag.objects.create(**form.cleaned_data)
-                tags = Tag.objects.all()
-                tags_json = serialize('json', tags)
-                response = {
-                    'error': 'Null',
-                    'tags': tags_json
-                }
-            except:
-                error = f"Тег с таким именем({form.cleaned_data['tag_name']}) уже существует"
-                response = {
-                    'error': error,
-                    'tags': 'Null'
-                }
-        else:
-            error = form.errors
+    data = body
+    data['slug'] = slugify_rus(data['name'])
+    form = CreateTagForm(data)
+    if form.is_valid():
+        try:
+            Tag.objects.create(**form.cleaned_data)
+            tags = Tag.objects.all()
+            tags_json = serialize('json', tags)
+            response = {
+                'error': 'Null',
+                'tags': tags_json
+            }
+        except:
+            error = f"Тег с таким именем({form.cleaned_data['tag_name']}) уже существует"
             response = {
                 'error': error,
                 'tags': 'Null'
             }
+    else:
+        error = form.errors
+        response = {
+            'error': error,
+            'tags': 'Null'
+        }
 
-        return JsonResponse(response)
+    return JsonResponse(response)
 
 
 class UpdateExercise(LoginRequiredMixin, DataMixin, UpdateView):

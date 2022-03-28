@@ -1,6 +1,7 @@
 from django import forms
 from .models import *
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UsernameField, PasswordResetForm
+from django.contrib.auth import password_validation
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UsernameField, PasswordResetForm, SetPasswordForm
 from .models import *
 from .models import CustomUser as User
 
@@ -96,7 +97,9 @@ class CustomAuthenticationForm(AuthenticationForm):
     password = forms.CharField(
         label="Пароль:",
         widget=forms.PasswordInput(attrs={
+            'id':'password',
             'class': 'form-control',
+            'autocomplete': 'new-password',
             'type': 'password',
             'align': 'center',
             'placeholder': ''
@@ -118,3 +121,33 @@ class CustomPasswordResetForm(PasswordResetForm):
                                         'id': 'email_address'
                                         }
                              ))
+
+#  ======================================================================
+#  === Форма сброса пароля ==============================================
+
+
+class CustomSetPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(
+        label="Новый пароль",
+        label_suffix=':',
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'autocomplete': 'new-password',
+            'type': 'text',
+            'align': 'center',
+            'placeholder': ''
+        }),
+        help_text=password_validation.password_validators_help_text_html()
+    )
+
+    new_password2 = forms.CharField(
+        label="Подтверждение пароля",
+        label_suffix=':',
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'autocomplete': 'new-password',
+            'type': 'password',
+            'align': 'center',
+            'placeholder': ''
+        }),
+    )
