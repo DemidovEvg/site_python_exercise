@@ -1,18 +1,23 @@
+import hashlib
+import html
+import logging
+from pprint import pprint
+from urllib.parse import unquote
+
+from demidovsite.settings import *
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.views import (LoginView, LogoutView,
+                                       PasswordResetCompleteView,
+                                       PasswordResetConfirmView,
+                                       PasswordResetDoneView,
+                                       PasswordResetView)
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView
+
 from .forms import *
-from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView
-from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetDoneView
-from django.contrib.auth.views import PasswordResetCompleteView
-from django.contrib.auth import authenticate, login
 from .models import *
-import hashlib
-from demidovsite.settings import *
-from urllib.parse import unquote
-import html
-import logging
 
 
 class RegistrationUserView(CreateView):
@@ -70,10 +75,16 @@ class CustomPasswordResetView(PasswordResetView):
     template_name = 'password_reset_form.html'
     email_template_name = 'password_reset_email.html'
 
+    def __init__(self, *args, **kwargs):
+        return PasswordResetView.__init__(self, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Сброс пароля'
         return context
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):

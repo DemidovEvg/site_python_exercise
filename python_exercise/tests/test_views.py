@@ -1,10 +1,11 @@
+import urllib
+from random import randint
+
+from custom_auth.models import CustomUser
 from django.test import TestCase
+
 from ..models import *
 from ..urls import *
-from custom_auth.models import CustomUser
-
-
-from random import randint
 
 
 class AccessibleViewsTest(TestCase):
@@ -50,7 +51,7 @@ class AccessibleViewsTest(TestCase):
                 id=num_exercise,
                 title=f'Задание{num_exercise}',
                 task_text='''
-                <p>Некоторый текст<p> 
+                <p>Некоторый текст<p>
                 <p onclick='dangerScript.js'> Запрещенный параграф </p>
                 <script>
                 alert(111);
@@ -196,10 +197,166 @@ class AccessibleViewsTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    def test_view_url_user_exercises_update_accessible_by_name(self):
+    def test_view_url_user_exercises_create_accessible_by_name(self):
         self.test_view_url_user_exercises_accessible_by_name(
             'python_exercise:user_exercises_create')
 
     def test_view_url_user_exercises_update_accessible_by_name(self):
         self.test_view_url_user_exercises_accessible_by_name(
             'python_exercise:user_exercises_update')
+
+
+class CreateUpdateExerciseTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # Создадим 5 заданий, 3 категории, 3 тега, 3 авторов
+        number_of_exercises = 5
+        num_categories = 3
+        num_tags = 3
+        num_authors = 3
+
+        for num_categorie in range(num_categories):
+            cat = Category.objects.create(
+                id=num_categorie,
+                name=f'Категория {num_categorie}',
+                complexity=num_categorie,
+                slug=f'cat{num_categorie}')
+
+            cat.save()
+
+        for num_tag in range(num_tags):
+            tag = Tag.objects.create(
+                id=num_tag,
+                name=f'Тег {num_tag}',
+                slug=f'tag{num_tag}')
+
+            tag.save()
+
+        for num_author in range(num_authors):
+            newUser = CustomUser.objects.create(
+                id=num_author,
+                username=f'user{num_author}',
+                first_name=f'Иван{num_author}',
+                last_name=f'Петров{num_author}',
+                email=f'ivan{num_author}@mail.ru',
+            )
+            newUser.set_password(str(num_author))
+            newUser.save()
+
+        for num_exercise in range(number_of_exercises):
+            exercise = Exercise.objects.create(
+                id=num_exercise,
+                title=f'Задание{num_exercise}',
+                task_text='''
+                <p>Некоторый текст<p>
+                <p onclick='dangerScript.js'> Запрещенный параграф </p>
+                <script>
+                alert(111);
+                </script>
+                <pre class="language-python"><code>
+                import pprint
+                <script>
+                alert(1111);
+                </script>
+                </code></pre>
+                ''',
+                category=Category.objects.get(pk=randint(0, 2)),
+                author_update=CustomUser.objects.get(pk=randint(0, 2)))
+
+            exercise.tag.add(Tag.objects.get(pk=randint(0, 2)))
+
+            exercise.save()
+
+    def test_create_new_exercise(self):
+        # Пробуем создать задачу без авторизации
+        data = {
+            'title': f'Новое задание',
+            'task_text': '''
+                <p>Некоторый текст<p>
+                <p onclick='dangerScript.js'> Запрещенный параграф </p>
+                <script>
+                alert(111);
+                </script>
+                <pre class="language-python"><code>
+                import pprint
+                <script>
+                alert(1111);
+                </script>
+                </code></pre>
+                ''',
+            'is_published': True,
+            'category': 1,
+            'tag': (1,)
+        }
+
+        url = reverse('python_exercise:create-exercise')
+
+        response = self.client.post(
+            url,
+            data=data)
+
+        params = {'next': url}
+        self.assertRedirects(response,
+                             reverse('custom_auth:login')
+                             + f'?{urllib.parse.urlencode(params)}',
+                             status_code=302)
+
+        self.assertFalse(Exercise.objects.filter(
+            title='Новое задание').count())
+
+        # Пробуем создать задачу c авторизацией
+        login = self.client.login(username='user0', password='0')
+
+        response = self.client.post(
+            url,
+            data=data)
+
+        new_exercise = Exercise.objects.get(title='Новое задание')
+        self.assertTrue(new_exercise)
+        self.assertRedirects(response,
+                             reverse('python_exercise:exercise',
+                                     kwargs={'exercise_id': new_exercise.id}),
+                             status_code=302)
+
+    def test_update_new_exercise(self):
+        # Пробуем редактировать задачу без авторизации
+        any_exrcise = Exercise.objects.get(pk=1)
+        data = {
+            'title': any_exrcise.title,
+            'task_text': any_exrcise.task_text + 'new_text',
+            'is_published': any_exrcise.is_published,
+            'category': any_exrcise.category_id,
+            'tag': (any_exrcise.tag.all()[0].id,)
+        }
+
+        url = reverse('python_exercise:update-exercise',
+                      kwargs={'exercise_id': any_exrcise.id})
+
+        response = self.client.post(
+            url,
+            data=data)
+
+        params = {'next': url}
+        self.assertRedirects(response,
+                             reverse('custom_auth:login')
+                             + f'?{urllib.parse.urlencode(params)}',
+                             status_code=302)
+
+        any_exrcise_update = Exercise.objects.get(pk=1)
+
+        self.assertFalse('new_text' in any_exrcise_update.task_text)
+
+        # Пробуем изменить задачу c авторизацией
+        login = self.client.login(username='user0', password='0')
+
+        response = self.client.post(
+            url,
+            data=data)
+
+        any_exrcise_update = Exercise.objects.get(pk=1)
+
+        self.assertTrue('new_text' in any_exrcise_update.task_text)
+        self.assertRedirects(response,
+                             reverse('python_exercise:exercise',
+                                     kwargs={'exercise_id': any_exrcise_update.id}),
+                             status_code=302)

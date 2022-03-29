@@ -154,15 +154,12 @@ class CreateExercise(LoginRequiredMixin, DataMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        return super().form_valid(form)
-
-    def form_valid(self, form):
         form.instance.author_create = self.request.user
         form.instance.author_update = self.request.user
         return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
-        print(self.request.POST)
+        # breakpoint()
         return super().post(request, *args, **kwargs)
 
     def get_success_url(self):

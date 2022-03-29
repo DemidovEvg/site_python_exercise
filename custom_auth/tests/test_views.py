@@ -3,6 +3,8 @@ from ..models import *
 from django.urls import reverse
 import hashlib
 from demidovsite.settings import APP_ID_VK, SECRET_KEY_VK
+from django.core import mail
+import re
 
 
 class TestAccessibleViewsTest(TestCase):
@@ -105,4 +107,42 @@ class TestAccessibleViewsTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_password_reset_accessible_by_name(self):
-        pass
+        # Заходим на страницу с вводом почты
+        response = self.client.get(
+            reverse('custom_auth:password_reset'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.template_name, ['password_reset_form.html'])
+
+        # Отправляем почту на сервер
+        response = self.client.post(reverse('custom_auth:password_reset'),
+                                    data={'email': 'ivan0@mail.ru'})
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue('testserver' in mail.outbox[0].subject)
+
+        RE_URL = re.compile('https?:\/\/testserver.*\/')
+
+        url_password_reset_confirm = RE_URL.findall(mail.outbox[0].body)[0]
+
+        # Переходим по ссылке в письме
+        response = self.client.get(url_password_reset_confirm, follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        password = CustomUser.objects.get(email='ivan0@mail.ru').password
+        csrfmiddlewaretoken = str(response.context[0]['csrf_token'])
+
+        # Отправляем новый пароль на сервер
+        response = self.client.post(
+            response.request['PATH_INFO'],
+            data={'csrfmiddlewaretoken': csrfmiddlewaretoken,
+                  'new_password1': 'pFDass12DD3321',
+                  'new_password2': 'pFDass12DD3321'},
+            follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        username = CustomUser.objects.get(email='ivan0@mail.ru').username
+
+        # Логинимся с новым паролем
+        login = self.client.login(username=username, password='pFDass12DD3321')
+        self.assertTrue(login)

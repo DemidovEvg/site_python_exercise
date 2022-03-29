@@ -6,21 +6,21 @@ import logging
 import pprint
 
 
-def get_elements_from_obj(obj):
-    result = ''
-    for key in dir(obj):
-        try:
-            result += f'{key}\n'
-            value = pprint.pformat(obj.__getattribute__(key))
-            if "<WSGIRequest: GET '/'>>" in value:
-                result += str(obj.__getattribute__(key)())
-            else:
-                result += value
-            result += f'\n===========================================================================\n'
+# def get_elements_from_obj(obj):
+#     result = ''
+#     for key in dir(obj):
+#         try:
+#             result += f'{key}\n'
+#             value = pprint.pformat(obj.__getattribute__(key))
+#             if "<WSGIRequest: GET '/'>>" in value:
+#                 result += str(obj.__getattribute__(key)())
+#             else:
+#                 result += value
+#             result += f'\n===========================================================================\n'
 
-        except:
-            pass
-    return result
+#         except:
+#             pass
+#     return result
 
 
 class DataMixin:
