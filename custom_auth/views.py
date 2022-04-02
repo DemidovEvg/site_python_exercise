@@ -22,7 +22,7 @@ from .models import *
 
 class RegistrationUserView(CreateView):
     form_class = CustomUserCreationForm
-    template_name = 'registration.html'
+    template_name = 'custom_auth/registration.html'
     success_url = reverse_lazy('custom_auth:login')
 
     def get_context_data(self, **kwargs):
@@ -33,7 +33,7 @@ class RegistrationUserView(CreateView):
 
 class CustomLoginView(LoginView):
     form_class = CustomAuthenticationForm
-    template_name = 'login.html'
+    template_name = 'custom_auth/login.html'
     slug_url_kwarg = 'error'
 
     redirect_authenticated_user = True
@@ -61,7 +61,7 @@ class CustomLoginView(LoginView):
 
 
 class CustomLogoutView(LogoutView):
-    template_name = 'logged_out.html'
+    template_name = 'custom_auth/logged_out.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -72,8 +72,8 @@ class CustomLogoutView(LogoutView):
 class CustomPasswordResetView(PasswordResetView):
     form_class = CustomPasswordResetForm
     success_url = reverse_lazy('custom_auth:password_reset_done')
-    template_name = 'password_reset_form.html'
-    email_template_name = 'password_reset_email.html'
+    template_name = 'custom_auth/password_reset_form.html'
+    email_template_name = 'custom_auth/password_reset_email.html'
 
     def __init__(self, *args, **kwargs):
         return PasswordResetView.__init__(self, *args, **kwargs)
@@ -90,7 +90,7 @@ class CustomPasswordResetView(PasswordResetView):
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     form_class = CustomSetPasswordForm
     success_url = reverse_lazy('custom_auth:password_reset_complete')
-    template_name = 'password_reset_confirm.html'
+    template_name = 'custom_auth/password_reset_confirm.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -99,7 +99,7 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
-    template_name = 'password_reset_done.html'
+    template_name = 'custom_auth/password_reset_done.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -108,7 +108,7 @@ class CustomPasswordResetDoneView(PasswordResetDoneView):
 
 
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
-    template_name = 'password_reset_complete.html'
+    template_name = 'custom_auth/password_reset_complete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -134,7 +134,6 @@ def login_vk(request):
         return redirect(reverse('custom_auth:login_error',
                                 kwargs={'error': 'no-data'}))
 
-    # breakpoint()
     last_name = request.GET.get('last_name', '')
     photo_url = request.GET.get('photo', '')
     photo_url_small = request.GET.get('photo_rec', '')

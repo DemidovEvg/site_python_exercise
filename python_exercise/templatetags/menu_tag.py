@@ -31,9 +31,12 @@ menu = {
 }
 
 
-@register.inclusion_tag('menu_tag.html', takes_context=True)
+@register.inclusion_tag('python_exercise/menu_tag.html', takes_context=True)
 def menu_tag(context):
     context['menu'] = deepcopy(menu)
+    request = context['request']
+    context['next'] = request.path_info
+    context['timezones'] = common_timezones
+    context['now'] = timezone.now()
 
-    # context['menu']
     return context

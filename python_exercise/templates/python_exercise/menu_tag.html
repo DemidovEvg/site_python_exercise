@@ -32,7 +32,10 @@
                 {% endif %}
 
             </ul>
+
             <!-- Кнопки справа -->
+            {% include 'python_exercise/select_time.html' %}
+
             <ul class="navbar-nav mb-2 mb-lg-0">
                 {% if user.is_authenticated %}
 

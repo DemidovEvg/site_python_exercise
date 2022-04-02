@@ -112,7 +112,8 @@ class TestAccessibleViewsTest(TestCase):
             reverse('custom_auth:password_reset'))
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.template_name, ['password_reset_form.html'])
+        self.assertEqual(response.template_name, [
+                         'custom_auth/password_reset_form.html'])
 
         # Отправляем почту на сервер
         response = self.client.post(reverse('custom_auth:password_reset'),

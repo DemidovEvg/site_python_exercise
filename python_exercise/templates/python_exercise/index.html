@@ -1,6 +1,5 @@
-{% extends 'base.html' %}
+{% extends 'python_exercise/base.html' %}
 {% load pagination_tag %}
-
 
 {% block title %}
 {{ block.super }}
@@ -44,48 +43,17 @@
                                 {% endfor %}
                             </ul>
                         </div>
-
-
                         <div class="page-header">
                             <h2 class="text-center" style="z-index:-10">{{ title }}</h2>
-
-                            <h6 class="text-center ">
-
-                                {% if cur_url_name == 'user_exercises' %}
-                                <span>Все</span>
-                                {% else %}
-                                <a href="{% url 'python_exercise:user_exercises' username=user.username %}"
-                                    class="link-primary" style="text-decoration: none;">
-                                    Все
-                                </a>
-                                {% endif %}
-                                /
-                                {% if cur_url_name == 'user_exercises_create' %}
-                                <span>Я автор</span>
-                                {% else %}
-                                <a href="{% url 'python_exercise:user_exercises_create' username=user.username %}"
-                                    class="link-primary" style="text-decoration: none;">
-                                    Я автор
-                                </a>
-                                {% endif %}
-                                /
-                                {% if cur_url_name == 'user_exercises_update' %}
-                                <span>Я последний редактор</span>
-                                {% else %}
-                                <a href="{% url 'python_exercise:user_exercises_update' username=user.username %}"
-                                    class="link-primary" style="text-decoration: none;">
-                                    Я последний редактор
-                                </a>
-                                {% endif %}
-
-                            </h6>
+                            {% if current_tag %}
+                            <h6 class="text-center" style="z-index:-10">#{{ current_tag.name }}</h6>
+                            {% endif %}
                         </div>
-
                         <hr>
 
                         <div class="col-12">
                             {% for exercise in exercises %}
-                            {% include 'exercise.html' %}
+                            {% include 'python_exercise/exercise.html' %}
                             <hr>
                             {% endfor %}
                         </div>

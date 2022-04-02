@@ -108,41 +108,31 @@ class AccessibleViewsTest(TestCase):
         response = self.client.get(
             reverse('python_exercise:create-tag'))
 
-        status_code_redirect_permanent = 301
-
-        self.assertRedirects(
-            response,
-            reverse('python_exercise:home'),
-            status_code=status_code_redirect_permanent)
+        self.assertEqual(response.status_code, 405)
 
         # Пробуем сделать POST запрос на создание тега без регистрации
         response = self.client.post(
             reverse('python_exercise:create-tag'),
             data={'name': 'newTag'})
 
+        status_code_redirect_permanent = 301
+
         self.assertRedirects(
             response,
             reverse('custom_auth:login'),
             status_code=status_code_redirect_permanent)
 
-        # Пробуем сделать GET запрос на создание тега с регистрацией
-        login = self.client.login(username='user0', password='0')
-
-        response = self.client.get(
-            reverse('python_exercise:create-tag'))
-
-        self.assertRedirects(
-            response,
-            reverse('python_exercise:home'),
-            status_code=status_code_redirect_permanent
-        )
         # Пробуем сделать POST запрос на создание тега с регистрацией
+        login = self.client.login(username='user0', password='0')
+        self.assertTrue(login)
         response = self.client.post(
             reverse('python_exercise:create-tag'),
             data={'name': 'newTag'},
             content_type="application/json")
 
         self.assertEqual(response.status_code, 200)
+
+        self.assertTrue(Tag.objects.filter(name='newTag').count())
 
     def test_view_url_update_exercise_accessible_by_name(self):
         # Пробуем редактировать задачу без регистрации
@@ -169,6 +159,14 @@ class AccessibleViewsTest(TestCase):
             kwargs={'exercise_id': any_exercise_id}))
 
         self.assertEqual(response.status_code, 200)
+
+        any_exercise_id = 222
+
+        response = self.client.get(reverse(
+            'python_exercise:exercise',
+            kwargs={'exercise_id': any_exercise_id}))
+
+        self.assertEqual(response.status_code, 404)
 
     def test_view_url_user_exercises_accessible_by_name(self, url_name=None):
         # Пробуем посмотреть задачи пользователя без регистрации

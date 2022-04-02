@@ -62,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'python_exercise.middleware.TimezoneMiddleware'
 ]
 
 ROOT_URLCONF = 'demidovsite.urls'
@@ -69,8 +70,8 @@ ROOT_URLCONF = 'demidovsite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [BASE_DIR/'templates'],
+        'APP_DIRS': True, # Ищем внутри установленных приложений
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',

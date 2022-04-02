@@ -1,0 +1,18 @@
+{% load tz %}
+
+{% timezone "Europe/Paris" %}
+{{ now }}
+{% endtimezone %}
+
+{% get_current_timezone as TIME_ZONE %}
+<form action="{% url 'python_exercise:set_timezone' %}" method="POST">
+    {% csrf_token %}
+    <label for="timezone">Time zone:</label>
+    <select name="timezone">
+        {% for city, tz in timezones.items %}
+        <option value="{{ tz }}">{{ city }}</option>
+        {% endfor %}
+    </select>
+    <input type="hidden" name="next" value="{{ next }}">
+    <input type="submit" value="Set">
+</form>

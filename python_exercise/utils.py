@@ -4,6 +4,7 @@ from django.db.models import *
 import re
 import logging
 import pprint
+from django.utils import timezone
 
 
 # def get_elements_from_obj(obj):
@@ -21,6 +22,12 @@ import pprint
 #         except:
 #             pass
 #     return result
+
+common_timezones = {
+    'London': 'Europe/London',
+    'Paris': 'Europe/Paris',
+    'New York': 'America/New_York',
+}
 
 
 class DataMixin:

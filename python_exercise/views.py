@@ -1,19 +1,22 @@
 import json
-from django.http import HttpResponse, JsonResponse
-from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from pprint import pprint
-from django.template.defaultfilters import slugify
-from django.core.serializers import serialize
-from django.contrib.auth.mixins import LoginRequiredMixin
+
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.serializers import serialize
 from django.db.models import Q
-from django.shortcuts import redirect
-from .forms import ExerciseForm, CreateTagForm
+from django.http import Http404, HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template.defaultfilters import slugify
+from django.urls import reverse_lazy
+from django.views import View
+from django.views.decorators.http import require_POST
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
+
+from .forms import *
+from .forms import CreateTagForm, ExerciseForm
 from .models import *
 from .utils import *
-from .forms import *
-
 
 alphabet = {'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
             'й': 'j', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
@@ -30,7 +33,7 @@ def slugify_rus(s):
 
 class ShowExercises(DataMixin, ListView):
     model = Exercise
-    template_name = 'index.html'
+    template_name = 'python_exercise/index.html'
     context_object_name = 'exercises'
     paginate_by = 3
 
@@ -81,13 +84,12 @@ class ShowExercises(DataMixin, ListView):
             db_query = {}
 
         exercises = Exercise.objects.filter(**db_query)
-
         return exercises
 
 
 class ShowUserExercises(LoginRequiredMixin, ShowExercises):
     slug_url_kwarg = 'username'
-    template_name = 'user-exercises.html'
+    template_name = 'python_exercise/user-exercises.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -140,7 +142,7 @@ class ShowTag(Index):
 
 class CreateExercise(LoginRequiredMixin, DataMixin, CreateView):
     form_class = ExerciseForm
-    template_name = 'create-update-exercise.html'
+    template_name = 'python_exercise/create-update-exercise.html'
     login_url = reverse_lazy('custom_auth:login')
 
     def get_context_data(self, **kwargs):
@@ -159,16 +161,16 @@ class CreateExercise(LoginRequiredMixin, DataMixin, CreateView):
         return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
-        # breakpoint()
         return super().post(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse('python_exercise:exercise', args=(self.object.id,))
 
 
+@require_POST
 def create_tag(request):
-    if request.method != 'POST':
-        return redirect('python_exercise:home', permanent=True)
+    # if request.method != 'POST':
+    #     return redirect('python_exercise:home', permanent=True)
 
     if not request.user.is_authenticated:
         return redirect('custom_auth:login', permanent=True)
@@ -207,7 +209,7 @@ def create_tag(request):
 class UpdateExercise(LoginRequiredMixin, DataMixin, UpdateView):
     model = Exercise
     form_class = ExerciseForm
-    template_name = 'create-update-exercise.html'
+    template_name = 'python_exercise/create-update-exercise.html'
     pk_url_kwarg = 'exercise_id'
     login_url = reverse_lazy('custom_auth:login')
 
@@ -234,14 +236,14 @@ class UpdateExercise(LoginRequiredMixin, DataMixin, UpdateView):
 
 class ShowComments(DataMixin, DetailView):
     model = Exercise
-    template_name = 'exercise-discussion.html'
+    template_name = 'python_exercise/exercise-discussion.html'
     pk_url_kwarg = 'exercise_id'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['exercise'] = (Exercise.objects
-                               .select_related('author_create', 'author_update')
-                               .get(id=self.kwargs['exercise_id']))
+        context['exercise'] = get_object_or_404(
+            Exercise.objects.select_related('author_create', 'author_update'),
+            id=self.kwargs['exercise_id'])
 
         context['title'] = context['exercise'].title
         return context
@@ -249,3 +251,20 @@ class ShowComments(DataMixin, DetailView):
 
 def page_not_found(request, exception):
     return HttpResponse('<h1> Страница не найдена </h1>')
+
+
+def set_timezone(request):
+
+    if request.method != 'POST':
+        print('<' + request.POST['next'] + '>')
+        return redirect(request.POST['next'], permanent=True)
+
+    if request.method == 'POST':
+        print(request.POST['timezone'])
+        request.session['django_timezone'] = request.POST['timezone']
+        return redirect(request.POST['next'], permanent=True)
+
+
+class Qwe(View):
+    def post(self, request):
+        return HttpResponse('result')
