@@ -12,11 +12,16 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from django.views.decorators.vary import vary_on_headers
+from django.views.decorators.http import condition
 
 from .forms import *
 from .forms import CreateTagForm, ExerciseForm
 from .models import *
 from .utils import *
+
 
 alphabet = {'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
             'й': 'j', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
@@ -31,6 +36,9 @@ def slugify_rus(s):
     return slugify(''.join(alphabet.get(w, w) for w in s.lower()))
 
 
+@ method_decorator(vary_on_headers('Cookie'), name='dispatch')
+@ method_decorator(cache_page(60 * 15), name='dispatch')
+# @ method_decorator(condition(etag_func=lambda _: 'v1'), name='dispatch')
 class ShowExercises(DataMixin, ListView):
     model = Exercise
     template_name = 'python_exercise/index.html'
@@ -58,6 +66,7 @@ class ShowExercises(DataMixin, ListView):
 
         context['categories'] = Category.objects.all()
         context['tags'] = Tag.objects.all()
+
         return context
 
     def get_queryset(self):
@@ -83,7 +92,10 @@ class ShowExercises(DataMixin, ListView):
         else:
             db_query = {}
 
-        exercises = Exercise.objects.filter(**db_query)
+        exercises = (Exercise.objects
+                     .filter(**db_query)
+                     .select_related('category', 'author_create', 'author_update')
+                     .prefetch_related('tag'))
         return exercises
 
 
@@ -107,8 +119,10 @@ class ShowUserExercises(LoginRequiredMixin, ShowExercises):
         query_author_create = Q(author_create=self.request.user)
         query_author_update = Q(author_update=self.request.user)
 
-        exercises = Exercise.objects.filter(
-            query_author_create | query_author_update)
+        exercises = (Exercise.objects
+                     .filter(query_author_create | query_author_update)
+                     .select_related('category', 'author_create', 'author_update')
+                     .prefetch_related('tag'))
         return exercises
 
 
@@ -116,8 +130,10 @@ class ShowUserExercisesCreate(ShowUserExercises):
     def get_queryset(self):
         query_author_create = Q(author_create=self.request.user)
 
-        exercises = Exercise.objects.filter(
-            query_author_create)
+        exercises = (Exercise.objects
+                     .filter(query_author_create)
+                     .select_related('category', 'author_create', 'author_update')
+                     .prefetch_related('tag'))
         return exercises
 
 
@@ -125,8 +141,10 @@ class ShowUserExercisesUpdate(ShowUserExercises):
     def get_queryset(self):
         query_author_update = Q(author_update=self.request.user)
 
-        exercises = Exercise.objects.filter(
-            query_author_update)
+        exercises = (Exercise.objects
+                     .filter(query_author_update)
+                     .select_related('category', 'author_create', 'author_update')
+                     .prefetch_related('tag'))
         return exercises
 
 
@@ -263,8 +281,3 @@ def set_timezone(request):
         print(request.POST['timezone'])
         request.session['django_timezone'] = request.POST['timezone']
         return redirect(request.POST['next'], permanent=True)
-
-
-class Qwe(View):
-    def post(self, request):
-        return HttpResponse('result')

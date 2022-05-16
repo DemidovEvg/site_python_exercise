@@ -10,12 +10,22 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
 import mimetypes
 from decouple import config
 from pathlib import Path
+from environs import Env
+import sys
+
+env = Env()
+env.read_env()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+os.environ['PYTHONPATH'] = str(BASE_DIR)
+sys.path += str(BASE_DIR)
 
 
 # Quick-start development settings - unsuitable for production
@@ -32,7 +42,7 @@ TEMPLATE_DEBUG = config('TEMPLATE_DEBUG', default=False, cast=bool)
 
 mimetypes.add_type("application/javascript", ".js", True)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'jureti.ru', 'www.jureti.ru']
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -42,6 +52,7 @@ INTERNAL_IPS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,7 +61,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'python_exercise.apps.PythonExerciseConfig',
     'custom_auth.apps.CustomAuthConfig',
-    'debug_toolbar'
+    'debug_toolbar',
+    'rest_framework',
+    'snippets.apps.SnippetsConfig',
+    'rest_framework.authtoken',
+    'django_filters',
+    'crispy_forms',
+    'chat'
 ]
 
 MIDDLEWARE = [
@@ -62,7 +79,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'python_exercise.middleware.TimezoneMiddleware'
+    # 'python_exercise.middleware.TimezoneMiddleware',
+
 ]
 
 ROOT_URLCONF = 'demidovsite.urls'
@@ -71,7 +89,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR/'templates'],
-        'APP_DIRS': True, # Ищем внутри установленных приложений
+        'APP_DIRS': True,  # Ищем внутри установленных приложений
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -84,7 +102,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'demidovsite.wsgi.application'
-
+ASGI_APPLICATION = 'demidovsite.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379), ],
+        },
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -93,8 +119,16 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'TEST': {
+            'NAME': BASE_DIR / 'db_test.sqlite3'
+        }
     }
 }
+
+print('parent id:', os.getppid(), ' :: ', 'process id:', os.getpid())
+
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
 
 
 # Password validation
@@ -194,7 +228,7 @@ if DEBUG:
 
         'loggers': {
 
-            '': {
+            'django': {
                 'handlers': ['console'],
                 'level': 'INFO',
                 'filters': []
@@ -223,3 +257,31 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 SERVER_EMAIL = "service@jureti.ru"
 DEFAULT_FROM_EMAIL = "service@jureti.ru"
+
+
+# The cache backends to use.
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": BASE_DIR/'tmp'
+    }
+}
+
+# ========================================================
+# Настройки REST
+# ========================================================
+REST_FRAMEWORK = {
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    # ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 3
+}
+
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'

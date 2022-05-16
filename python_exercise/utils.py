@@ -40,7 +40,7 @@ class DataMixin:
         context['home_url_name'] = 'home'
 
         # logger = logging.getLogger('demidovsite')
-        # logger.critical(get_elements_from_obj(self.request))
+        # logger.critical('123')
 
         return context
 

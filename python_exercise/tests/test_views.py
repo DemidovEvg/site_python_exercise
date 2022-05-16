@@ -193,6 +193,8 @@ class AccessibleViewsTest(TestCase):
 
         response = self.client.get(url)
 
+        breakpoint()
+
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_user_exercises_create_accessible_by_name(self):
@@ -358,3 +360,75 @@ class CreateUpdateExerciseTest(TestCase):
                              reverse('python_exercise:exercise',
                                      kwargs={'exercise_id': any_exrcise_update.id}),
                              status_code=302)
+
+
+class ConditionTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # Создадим 5 заданий, 3 категории, 3 тега, 3 авторов
+        number_of_exercises = 5
+        num_categories = 3
+        num_tags = 3
+        num_authors = 3
+
+        for num_categorie in range(num_categories):
+            cat = Category.objects.create(
+                id=num_categorie,
+                name=f'Категория {num_categorie}',
+                complexity=num_categorie,
+                slug=f'cat{num_categorie}')
+
+            cat.save()
+
+        for num_tag in range(num_tags):
+            tag = Tag.objects.create(
+                id=num_tag,
+                name=f'Тег {num_tag}',
+                slug=f'tag{num_tag}')
+
+            tag.save()
+
+        for num_author in range(num_authors):
+            newUser = CustomUser.objects.create(
+                id=num_author,
+                username=f'user{num_author}',
+                first_name=f'Иван{num_author}',
+                last_name=f'Петров{num_author}',
+                email=f'ivan{num_author}@mail.ru',
+            )
+            newUser.set_password(str(num_author))
+            newUser.save()
+
+        for num_exercise in range(number_of_exercises):
+            exercise = Exercise.objects.create(
+                id=num_exercise,
+                title=f'Задание{num_exercise}',
+                task_text='''
+                <p>Некоторый текст<p>
+                <p onclick='dangerScript.js'> Запрещенный параграф </p>
+                <script>
+                alert(111);
+                </script>
+                <pre class="language-python"><code>
+                import pprint
+                <script>
+                alert(1111);
+                </script>
+                </code></pre>
+                ''',
+                category=Category.objects.get(pk=randint(0, 2)),
+                author_update=CustomUser.objects.get(pk=randint(0, 2)))
+
+            exercise.tag.add(Tag.objects.get(pk=randint(0, 2)))
+
+            exercise.save()
+
+    def test_condition(self):
+        # Проверяем метки в представлении
+        headers = {'HTTP_IF_MATCH': '"v2"'}
+        response = self.client.get(reverse('python_exercise:home'), **headers)
+        self.assertEqual(response.status_code, 412)
+
+        headers = {'HTTP_IF_NONE_MATCH': '"v1"'}
+        response = self.client.get(reverse('python_exercise:home'), **headers)
+        self.assertEqual(response.status_code, 304)

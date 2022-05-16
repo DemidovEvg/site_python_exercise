@@ -34,15 +34,13 @@
             </ul>
 
             <!-- Кнопки справа -->
-            {% include 'python_exercise/select_time.html' %}
-
             <ul class="navbar-nav mb-2 mb-lg-0">
                 {% if user.is_authenticated %}
 
                 <li class="nav-item">
                     <span class="nav-link me-2 my-1">
                         {{ user.first_name }} {{ user.last_name }} ({{ user.username }})
-                        {% if user.userdata %}
+                        {% if user.userdata and user.userdata.photo_url %}
                         <img class="rounded-circle ms-2" src="{{ user.userdata.photo_url }}" alt="фото_нет"
                             style="height: 30px">
                         {% endif %}

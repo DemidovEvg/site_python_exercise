@@ -6,9 +6,6 @@ from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCom
 app_name = 'python_exercise'
 
 urlpatterns = [
-    path('123/',
-         Qwe.as_view(),
-         name='home'),
     path('',
          ShowExercises.as_view(),
          name='home'),
@@ -58,4 +55,3 @@ urlpatterns = [
          name='set_timezone'),
 
 ]
-

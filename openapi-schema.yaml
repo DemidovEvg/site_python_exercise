@@ -1,0 +1,874 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /rest/snippets/:
+    get:
+      operationId: listSnippets
+      description: "ModelViewSet \u0430\u0432\u0442\u043E\u043C\u0430\u0442\u0438\u0447\
+        \u0435\u0441\u043A\u0438 \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442\
+        \ \u043C\u0435\u0442\u043E\u0434\u044B list, create, retrive, update, destroy"
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?page=4
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?page=2
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Snippet'
+          description: ''
+      tags:
+      - rest
+    post:
+      operationId: createSnippet
+      description: "ModelViewSet \u0430\u0432\u0442\u043E\u043C\u0430\u0442\u0438\u0447\
+        \u0435\u0441\u043A\u0438 \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442\
+        \ \u043C\u0435\u0442\u043E\u0434\u044B list, create, retrive, update, destroy"
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Snippet'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Snippet'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Snippet'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snippet'
+          description: ''
+      tags:
+      - rest
+  /rest/snippets/{id}/:
+    get:
+      operationId: retrieveSnippet
+      description: "ModelViewSet \u0430\u0432\u0442\u043E\u043C\u0430\u0442\u0438\u0447\
+        \u0435\u0441\u043A\u0438 \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442\
+        \ \u043C\u0435\u0442\u043E\u0434\u044B list, create, retrive, update, destroy"
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this snippet.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snippet'
+          description: ''
+      tags:
+      - rest
+    put:
+      operationId: updateSnippet
+      description: "ModelViewSet \u0430\u0432\u0442\u043E\u043C\u0430\u0442\u0438\u0447\
+        \u0435\u0441\u043A\u0438 \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442\
+        \ \u043C\u0435\u0442\u043E\u0434\u044B list, create, retrive, update, destroy"
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this snippet.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Snippet'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Snippet'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Snippet'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snippet'
+          description: ''
+      tags:
+      - rest
+    patch:
+      operationId: partialUpdateSnippet
+      description: "ModelViewSet \u0430\u0432\u0442\u043E\u043C\u0430\u0442\u0438\u0447\
+        \u0435\u0441\u043A\u0438 \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442\
+        \ \u043C\u0435\u0442\u043E\u0434\u044B list, create, retrive, update, destroy"
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this snippet.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Snippet'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Snippet'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Snippet'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snippet'
+          description: ''
+      tags:
+      - rest
+    delete:
+      operationId: destroySnippet
+      description: "ModelViewSet \u0430\u0432\u0442\u043E\u043C\u0430\u0442\u0438\u0447\
+        \u0435\u0441\u043A\u0438 \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442\
+        \ \u043C\u0435\u0442\u043E\u0434\u044B list, create, retrive, update, destroy"
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this snippet.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - rest
+  /rest/snippets/{id}/highlight/:
+    get:
+      operationId: highlightSnippet
+      description: "ModelViewSet \u0430\u0432\u0442\u043E\u043C\u0430\u0442\u0438\u0447\
+        \u0435\u0441\u043A\u0438 \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442\
+        \ \u043C\u0435\u0442\u043E\u0434\u044B list, create, retrive, update, destroy"
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this snippet.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            text/html:
+              schema:
+                $ref: '#/components/schemas/Snippet'
+          description: ''
+      tags:
+      - rest
+  /rest/users/:
+    get:
+      operationId: listCustomUsers
+      description: "ReadOnlyModelViewSet \u0430\u0432\u0442\u043E\u043C\u0430\u0442\
+        \u0438\u0447\u0435\u0441\u043A\u0438 \u0434\u043E\u0431\u0430\u0432\u043B\u044F\
+        \u0435\u0442 \u043C\u0435\u0442\u043E\u0434 list \u0438 retrieve"
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?page=4
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?page=2
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+          description: ''
+      tags:
+      - rest
+  /rest/users/{id}/:
+    get:
+      operationId: retrieveCustomUser
+      description: "ReadOnlyModelViewSet \u0430\u0432\u0442\u043E\u043C\u0430\u0442\
+        \u0438\u0447\u0435\u0441\u043A\u0438 \u0434\u043E\u0431\u0430\u0432\u043B\u044F\
+        \u0435\u0442 \u043C\u0435\u0442\u043E\u0434 list \u0438 retrieve"
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this custom user.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      tags:
+      - rest
+components:
+  schemas:
+    Snippet:
+      type: object
+      properties:
+        url:
+          type: string
+          readOnly: true
+        id:
+          type: integer
+          readOnly: true
+        highlight:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 100
+        code:
+          type: string
+        linenos:
+          type: boolean
+        language:
+          enum:
+          - abap
+          - abnf
+          - actionscript
+          - actionscript3
+          - ada
+          - adl
+          - agda
+          - aheui
+          - alloy
+          - ambienttalk
+          - amdgpu
+          - ampl
+          - ansys
+          - antlr
+          - antlr-actionscript
+          - antlr-cpp
+          - antlr-csharp
+          - antlr-java
+          - antlr-objc
+          - antlr-perl
+          - antlr-python
+          - antlr-ruby
+          - apacheconf
+          - apl
+          - applescript
+          - arduino
+          - arrow
+          - asc
+          - aspectj
+          - aspx-cs
+          - aspx-vb
+          - asymptote
+          - augeas
+          - autohotkey
+          - autoit
+          - awk
+          - bare
+          - basemake
+          - bash
+          - batch
+          - bbcbasic
+          - bbcode
+          - bc
+          - bdd
+          - befunge
+          - bibtex
+          - blitzbasic
+          - blitzmax
+          - bnf
+          - boa
+          - boo
+          - boogie
+          - brainfuck
+          - bst
+          - bugs
+          - c
+          - c-objdump
+          - ca65
+          - cadl
+          - camkes
+          - capdl
+          - capnp
+          - cbmbas
+          - cddl
+          - ceylon
+          - cfc
+          - cfengine3
+          - cfm
+          - cfs
+          - chaiscript
+          - chapel
+          - charmci
+          - cheetah
+          - cirru
+          - clay
+          - clean
+          - clojure
+          - clojurescript
+          - cmake
+          - cobol
+          - cobolfree
+          - coffeescript
+          - common-lisp
+          - componentpascal
+          - console
+          - coq
+          - cpp
+          - cpp-objdump
+          - cpsa
+          - cr
+          - crmsh
+          - croc
+          - cryptol
+          - csharp
+          - csound
+          - csound-document
+          - csound-score
+          - css
+          - css+django
+          - css+genshitext
+          - css+lasso
+          - css+mako
+          - css+mozpreproc
+          - css+myghty
+          - css+php
+          - css+ruby
+          - css+smarty
+          - cuda
+          - cypher
+          - cython
+          - d
+          - d-objdump
+          - dart
+          - dasm16
+          - debcontrol
+          - debsources
+          - delphi
+          - devicetree
+          - dg
+          - diff
+          - django
+          - docker
+          - doscon
+          - dpatch
+          - dtd
+          - duel
+          - dylan
+          - dylan-console
+          - dylan-lid
+          - earl-grey
+          - easytrieve
+          - ebnf
+          - ec
+          - ecl
+          - eiffel
+          - elixir
+          - elm
+          - elpi
+          - emacs-lisp
+          - email
+          - erb
+          - erl
+          - erlang
+          - evoque
+          - execline
+          - extempore
+          - ezhil
+          - factor
+          - fan
+          - fancy
+          - felix
+          - fennel
+          - fish
+          - flatline
+          - floscript
+          - forth
+          - fortran
+          - fortranfixed
+          - foxpro
+          - freefem
+          - fsharp
+          - fstar
+          - futhark
+          - gap
+          - gas
+          - gcode
+          - gdscript
+          - genshi
+          - genshitext
+          - gherkin
+          - glsl
+          - gnuplot
+          - go
+          - golo
+          - gooddata-cl
+          - gosu
+          - graphviz
+          - groff
+          - groovy
+          - gsql
+          - gst
+          - haml
+          - handlebars
+          - haskell
+          - haxe
+          - haxeml
+          - hexdump
+          - hlsl
+          - hsail
+          - hspec
+          - html
+          - html+cheetah
+          - html+django
+          - html+evoque
+          - html+genshi
+          - html+handlebars
+          - html+lasso
+          - html+mako
+          - html+myghty
+          - html+ng2
+          - html+php
+          - html+smarty
+          - html+twig
+          - html+velocity
+          - http
+          - hybris
+          - hylang
+          - i6t
+          - icon
+          - idl
+          - idris
+          - iex
+          - igor
+          - inform6
+          - inform7
+          - ini
+          - io
+          - ioke
+          - irc
+          - isabelle
+          - j
+          - jags
+          - jasmin
+          - java
+          - javascript
+          - javascript+cheetah
+          - javascript+django
+          - javascript+lasso
+          - javascript+mako
+          - javascript+mozpreproc
+          - javascript+myghty
+          - javascript+php
+          - javascript+ruby
+          - javascript+smarty
+          - jcl
+          - jlcon
+          - js+genshitext
+          - jsgf
+          - jslt
+          - json
+          - jsonld
+          - jsp
+          - julia
+          - juttle
+          - kal
+          - kconfig
+          - kmsg
+          - koka
+          - kotlin
+          - kuin
+          - lasso
+          - lean
+          - less
+          - lighttpd
+          - lilypond
+          - limbo
+          - liquid
+          - literate-agda
+          - literate-cryptol
+          - literate-haskell
+          - literate-idris
+          - livescript
+          - llvm
+          - llvm-mir
+          - llvm-mir-body
+          - logos
+          - logtalk
+          - lsl
+          - lua
+          - make
+          - mako
+          - maql
+          - markdown
+          - mask
+          - mason
+          - mathematica
+          - matlab
+          - matlabsession
+          - maxima
+          - meson
+          - mime
+          - minid
+          - miniscript
+          - modelica
+          - modula2
+          - monkey
+          - monte
+          - moocode
+          - moonscript
+          - mosel
+          - mozhashpreproc
+          - mozpercentpreproc
+          - mql
+          - mscgen
+          - mupad
+          - mxml
+          - myghty
+          - mysql
+          - nasm
+          - ncl
+          - nemerle
+          - nesc
+          - nestedtext
+          - newlisp
+          - newspeak
+          - ng2
+          - nginx
+          - nimrod
+          - nit
+          - nixos
+          - nodejsrepl
+          - notmuch
+          - nsis
+          - numpy
+          - nusmv
+          - objdump
+          - objdump-nasm
+          - objective-c
+          - objective-c++
+          - objective-j
+          - ocaml
+          - octave
+          - odin
+          - omg-idl
+          - ooc
+          - opa
+          - openedge
+          - output
+          - pacmanconf
+          - pan
+          - parasail
+          - pawn
+          - peg
+          - perl
+          - perl6
+          - php
+          - pig
+          - pike
+          - pkgconfig
+          - plpgsql
+          - pointless
+          - pony
+          - postgresql
+          - postscript
+          - pot
+          - pov
+          - powershell
+          - praat
+          - procfile
+          - prolog
+          - promql
+          - properties
+          - protobuf
+          - psql
+          - psysh
+          - pug
+          - puppet
+          - pwsh-session
+          - py2tb
+          - pycon
+          - pypylog
+          - pytb
+          - python
+          - python2
+          - qbasic
+          - qml
+          - qvto
+          - racket
+          - ragel
+          - ragel-c
+          - ragel-cpp
+          - ragel-d
+          - ragel-em
+          - ragel-java
+          - ragel-objc
+          - ragel-ruby
+          - rbcon
+          - rconsole
+          - rd
+          - reasonml
+          - rebol
+          - red
+          - redcode
+          - registry
+          - resourcebundle
+          - restructuredtext
+          - rexx
+          - rhtml
+          - ride
+          - rita
+          - rng-compact
+          - roboconf-graph
+          - roboconf-instances
+          - robotframework
+          - rql
+          - rsl
+          - ruby
+          - rust
+          - sarl
+          - sas
+          - sass
+          - savi
+          - scala
+          - scaml
+          - scdoc
+          - scheme
+          - scilab
+          - scss
+          - sed
+          - sgf
+          - shen
+          - shexc
+          - sieve
+          - silver
+          - singularity
+          - slash
+          - slim
+          - slurm
+          - smali
+          - smalltalk
+          - smarty
+          - smithy
+          - sml
+          - snobol
+          - snowball
+          - solidity
+          - sophia
+          - sp
+          - sparql
+          - spec
+          - spice
+          - splus
+          - sql
+          - sqlite3
+          - squidconf
+          - srcinfo
+          - ssp
+          - stan
+          - stata
+          - supercollider
+          - swift
+          - swig
+          - systemverilog
+          - tads3
+          - tap
+          - tasm
+          - tcl
+          - tcsh
+          - tcshcon
+          - tea
+          - teal
+          - teratermmacro
+          - termcap
+          - terminfo
+          - terraform
+          - tex
+          - text
+          - thrift
+          - ti
+          - tid
+          - tnt
+          - todotxt
+          - toml
+          - trac-wiki
+          - trafficscript
+          - treetop
+          - tsql
+          - turtle
+          - twig
+          - typescript
+          - typoscript
+          - typoscriptcssdata
+          - typoscripthtmldata
+          - ucode
+          - unicon
+          - urbiscript
+          - usd
+          - vala
+          - vb.net
+          - vbscript
+          - vcl
+          - vclsnippets
+          - vctreestatus
+          - velocity
+          - verilog
+          - vgl
+          - vhdl
+          - vim
+          - wast
+          - wdiff
+          - webidl
+          - whiley
+          - x10
+          - xml
+          - xml+cheetah
+          - xml+django
+          - xml+evoque
+          - xml+lasso
+          - xml+mako
+          - xml+myghty
+          - xml+php
+          - xml+ruby
+          - xml+smarty
+          - xml+velocity
+          - xorg.conf
+          - xquery
+          - xslt
+          - xtend
+          - xul+mozpreproc
+          - yaml
+          - yaml+jinja
+          - yang
+          - zeek
+          - zephir
+          - zig
+          type: string
+        style:
+          enum:
+          - abap
+          - algol
+          - algol_nu
+          - arduino
+          - autumn
+          - borland
+          - bw
+          - colorful
+          - default
+          - dracula
+          - emacs
+          - friendly
+          - friendly_grayscale
+          - fruity
+          - gruvbox-dark
+          - gruvbox-light
+          - igor
+          - inkpot
+          - lilypond
+          - lovelace
+          - manni
+          - material
+          - monokai
+          - murphy
+          - native
+          - one-dark
+          - paraiso-dark
+          - paraiso-light
+          - pastie
+          - perldoc
+          - rainbow_dash
+          - rrt
+          - sas
+          - solarized-dark
+          - solarized-light
+          - stata
+          - stata-dark
+          - stata-light
+          - tango
+          - trac
+          - vim
+          - vs
+          - xcode
+          - zenburn
+          type: string
+        owner:
+          type: string
+          readOnly: true
+      required:
+      - code
+    User:
+      type: object
+      properties:
+        url:
+          type: string
+          readOnly: true
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: "\u041E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\
+            \u043E\u0435 \u043F\u043E\u043B\u0435. \u041D\u0435 \u0431\u043E\u043B\
+            \u0435\u0435 150 \u0441\u0438\u043C\u0432\u043E\u043B\u043E\u0432. \u0422\
+            \u043E\u043B\u044C\u043A\u043E \u0431\u0443\u043A\u0432\u044B, \u0446\u0438\
+            \u0444\u0440\u044B \u0438 \u0441\u0438\u043C\u0432\u043E\u043B\u044B @/./+/-/_."
+          pattern: ^[\w.@+-]+\z
+          maxLength: 150
+        snippets:
+          type: array
+          items:
+            type: string
+          readOnly: true
+      required:
+      - username
