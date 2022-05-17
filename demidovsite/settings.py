@@ -282,6 +282,14 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 3
 }
 
+# Выбор сериализатора для задач:
+CELERY_TASK_SERIALIZER = 'json'  # default
+
+# Игнорировать другой контент:
+CELERY_ACCEPT_CONTENT = ['json']  # default
+
+# Выбор сериализатора для результатов:
+CELERY_RESULT_SERIALIZER = 'json'  # default
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'

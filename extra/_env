@@ -1,0 +1,15 @@
+DEBUG=True
+TEMPLATE_DEBUG=True
+SECRET_KEY=django-insecure-^08@7g83iulf4d6y%19s=a^t739xba7$kexbobw28=p-y=)h15
+DATABASE_URL=mysql://myuser:mypassword@myhost/mydatabase
+
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+APP_ID_VK=8113311
+SECRET_KEY_VK=zxvkebJvOJFSHnyb6pKb
+EMAIL_HOST_PASSWORD = '8tWnMlXN0Shf'
+
+#PERCENTILE=90%
+#COMMENTED=42
+
+
